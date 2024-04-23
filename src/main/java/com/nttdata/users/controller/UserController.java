@@ -1,13 +1,15 @@
 package com.nttdata.users.controller;
 
+import com.nttdata.users.dto.PhoneDTO;
+import com.nttdata.users.dto.UserRequestDTO;
 import com.nttdata.users.dto.UserResponseDTO;
+import com.nttdata.users.entity.PhoneEntity;
 import com.nttdata.users.entity.UserEntity;
 import com.nttdata.users.service.IUserService;
+import com.nttdata.users.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,8 @@ public class UserController {
 
     private final IUserService iUserService;
 
+    private final Util util;
+
     @GetMapping
     public List<UserResponseDTO> getUserList(){
         log.info("GET /user-registry/");
@@ -29,6 +33,16 @@ public class UserController {
         }
         log.info(String.format("response: %d", response.size()));
         return response;
+    }
+
+
+    @PostMapping
+    public UserResponseDTO createUser(@RequestBody UserRequestDTO userRequest){
+        log.info("POST /user-registry/" + util.obj2Json(userRequest));
+        log.info(String.format("Creating user: %s", util.obj2Json(userRequest)));
+        UserEntity saved = iUserService.saveUser(userRequest2Entity(userRequest));
+        log.info(String.format("response: %s", util.obj2Json(saved)));
+        return userEntity2DTO(saved);
     }
 
 
@@ -48,5 +62,34 @@ public class UserController {
                 .token(entity.getToken())
                 .active(entity.isActive())
                 .build();
+    }
+
+    /**
+     * User DTO to entity
+     *
+     */
+    private UserEntity userRequest2Entity(UserRequestDTO userRequest) {
+        return UserEntity.builder()
+                .name(userRequest.getName())
+                .email(userRequest.getEmail())
+                .password(userRequest.getPassword())
+                .phones(phoneRequest2Entity(userRequest))
+                .build() ;
+    }
+
+    /**
+     * Phones DTO to entity
+     *
+     */
+    private List<PhoneEntity> phoneRequest2Entity(UserRequestDTO userRequest){
+        List<PhoneEntity> phones = new ArrayList<>();
+        for(PhoneDTO p : userRequest.getPhones()){
+            phones.add(PhoneEntity.builder()
+                    .contrycode(p.getContrycode())
+                    .citycode(p.getCitycode())
+                    .number(p.getNumber())
+                    .build());
+        }
+        return phones;
     }
 }
