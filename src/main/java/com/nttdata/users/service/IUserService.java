@@ -8,4 +8,6 @@ public interface IUserService {
     List<UserEntity> findAll();
 
     UserEntity saveUser(UserEntity user);
+
+    UserEntity findById(String id);
 }

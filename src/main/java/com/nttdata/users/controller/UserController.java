@@ -46,6 +46,13 @@ public class UserController {
     }
 
 
+    @GetMapping("/{id}")
+    public UserResponseDTO getUserById(@PathVariable String id){
+        log.info(String.format("GET /user-registry/%s", id));
+        UserEntity found = iUserService.findById(id);
+        log.info(String.format("response: %s", util.obj2Json(found)));
+        return userEntity2DTO(found);
+    }
 
     /**
      * User entity to DTO
