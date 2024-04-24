@@ -9,6 +9,7 @@ import com.nttdata.users.service.IUserService;
 import com.nttdata.users.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequestMapping("/user-registry/")
 public class UserController {
 
+    @Qualifier("UserServiceImpl")
     private final IUserService iUserService;
 
     private final Util util;

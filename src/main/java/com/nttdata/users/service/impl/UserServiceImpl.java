@@ -7,6 +7,7 @@ import com.nttdata.users.util.Util;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -22,6 +23,7 @@ import java.util.stream.StreamSupport;
 
 @Slf4j
 @Service
+@Qualifier("UserServiceImpl")
 @Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements IUserService {
