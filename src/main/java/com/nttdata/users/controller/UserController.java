@@ -54,6 +54,17 @@ public class UserController {
         return userEntity2DTO(found);
     }
 
+
+    @PutMapping("/{id}")
+    public UserResponseDTO updateUser(@PathVariable String id, @RequestBody UserRequestDTO userRequest){
+        log.info(String.format("PUT /user-registry/%s", id));
+        log.info(String.format("Updating user: %s", util.obj2Json(userRequest)));
+        UserEntity updated = iUserService.update(id, userRequest2Entity(userRequest));
+        log.info(String.format("response: %s", util.obj2Json(updated)));
+        return userEntity2DTO(updated);
+    }
+
+
     /**
      * User entity to DTO
      *

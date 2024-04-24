@@ -10,4 +10,6 @@ public interface IUserService {
     UserEntity saveUser(UserEntity user);
 
     UserEntity findById(String id);
+
+    UserEntity update(String id, UserEntity old);
 }

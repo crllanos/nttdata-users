@@ -69,6 +69,22 @@ public class UserServiceImpl implements IUserService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format("User %s not found", id)));
     }
 
+    @Override
+    public UserEntity update(String id, UserEntity old) {
+        log.info(String.format("UserService.update() : %s, %s ", id, util.obj2Json(old)));
+        isValidUser(old, false);
+
+        UserEntity update = this.findById(id);
+        update.setName(old.getName());
+        update.setEmail(old.getEmail());
+        update.setPassword(old.getPassword());
+        update.setPhones(old.getPhones());
+        update.setModified(new Date());
+
+        log.info(String.format("Updating: %s", util.obj2Json(update)));
+        return userRepository.save(update);
+    }
+
 
     /***
      * Validators
