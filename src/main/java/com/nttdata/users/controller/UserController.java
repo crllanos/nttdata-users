@@ -64,11 +64,19 @@ public class UserController {
         return userEntity2DTO(updated);
     }
 
+    @DeleteMapping("/{id}")
+    public UserResponseDTO deleteUser(@PathVariable String id) {
+        log.info(String.format("DELETE /user-registry/%s", id));
+        UserEntity deleted = iUserService.delete(id);
+        log.info(String.format("response: %s", util.obj2Json(deleted)));
+        return userEntity2DTO(deleted);
+    }
 
-    /**
-     * User entity to DTO
-     *
-     */
+
+        /**
+         * User entity to DTO
+         *
+         */
     private UserResponseDTO userEntity2DTO(UserEntity entity){
         return UserResponseDTO.builder()
                 .id(entity.getId().toString())

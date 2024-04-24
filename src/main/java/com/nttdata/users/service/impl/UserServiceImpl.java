@@ -85,6 +85,14 @@ public class UserServiceImpl implements IUserService {
         return userRepository.save(update);
     }
 
+    @Override
+    public UserEntity delete(String id) {
+        log.info(String.format("UserService.delete() : %s", id));
+        UserEntity del = this.findById(id);
+        userRepository.delete(del);
+        return del;
+    }
+
 
     /***
      * Validators
