@@ -35,7 +35,7 @@ public class AuthenticationService {
         AdminEntity admin = AdminEntity.builder()
                         .name(input.getName())
                         .email(input.getEmail())
-                        .password(passwordEncoder.encode(input.getPassword()))
+                        .password(passwordEncoder.encode(input.getPassword())) // @todo validar formato password
                         .role(role.get())
                 .build();
         try{

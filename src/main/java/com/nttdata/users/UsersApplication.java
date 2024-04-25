@@ -12,6 +12,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
 
 @Slf4j
 @SpringBootApplication
@@ -26,19 +29,19 @@ public class UsersApplication {
 	 *
 	 */
 	@Bean
-	CommandLineRunner run(AdminService adminService, RoleService roleService, AuthenticationService authService){
+	CommandLineRunner run(AdminService adminService, RoleService roleService, PasswordEncoder passwordEncoder){
 		return args -> {
 			log.info("generando admins dummy...");
 
 			// crea roles desde enum
-			//RoleEntity roleAdmin = roleService.saveRole(RoleEntity.builder().name(RoleEnum.ADMIN).build());
-			//RoleEntity roleUser = roleService.saveRole(RoleEntity.builder().name(RoleEnum.USER).build());
+			roleService.saveRole(RoleEntity.builder().name(RoleEnum.SUPER_ADMIN).build());
 			roleService.saveRole(RoleEntity.builder().name(RoleEnum.ADMIN).build());
 			roleService.saveRole(RoleEntity.builder().name(RoleEnum.USER).build());
 
+			createSuperAdministrator(adminService, roleService, passwordEncoder);
+
 			// crea admins
-
-
+/*
 			authService.signup(AdminDTO.builder()
 					.name("Peter Parker")
 					.password("spiderman")
@@ -50,19 +53,30 @@ public class UsersApplication {
 					.password("ironman")
 					.email("ronman@avengers.org")
 					.role(RoleEnum.ADMIN.name()).build());
-
+*/
 			log.info("admins dummy creados");
 		};
 	}
-/*
-	private void generateAdmin(AdminService adminService, String name, String pass, String mail, RoleEntity role) {
+
+	private void createSuperAdministrator(AdminService adminService, RoleService roleService, PasswordEncoder passwordEncoder) {
+		AdminDTO superDto = AdminDTO.builder()
+				.name("Super Admin")
+				.email("super@admin.com")
+				.password("123456")
+				.build();
+
+		Optional<RoleEntity> optRole = roleService.findByName(RoleEnum.SUPER_ADMIN);
+		Optional<AdminEntity> optionalUser = adminService.findByEmail(superDto.getEmail());
+
+		if (optionalUser.isPresent()) {
+			throw new IllegalArgumentException("Super Admin already exists!");
+		}
+
 		adminService.saveAdmin(AdminEntity.builder()
-				.name(name)
-				.password(pass)
-				.email(mail)
-				.role(role)
+				.name(superDto.getName())
+				.email(superDto.getEmail())
+				.password(passwordEncoder.encode(superDto.getPassword()))
+				.role(optRole.get())
 				.build());
 	}
-
- */
 }

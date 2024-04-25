@@ -10,6 +10,7 @@ import com.nttdata.users.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class UserController {
     private final Util util;
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     public List<UserResponseDTO> getUserList(){
         log.info("GET /user-registry/");
         List<UserResponseDTO> response = new ArrayList<>();
@@ -39,6 +41,7 @@ public class UserController {
 
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public UserResponseDTO createUser(@RequestBody UserRequestDTO userRequest){
         log.info("POST /user-registry/" + util.obj2Json(userRequest));
         log.info(String.format("Creating user: %s", util.obj2Json(userRequest)));
@@ -49,6 +52,7 @@ public class UserController {
 
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public UserResponseDTO getUserById(@PathVariable String id){
         log.info(String.format("GET /user-registry/%s", id));
         UserEntity found = iUserService.findById(id);
@@ -58,6 +62,7 @@ public class UserController {
 
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public UserResponseDTO updateUser(@PathVariable String id, @RequestBody UserRequestDTO userRequest){
         log.info(String.format("PUT /user-registry/%s", id));
         log.info(String.format("Updating user: %s", util.obj2Json(userRequest)));
@@ -67,6 +72,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public UserResponseDTO deleteUser(@PathVariable String id) {
         log.info(String.format("DELETE /user-registry/%s", id));
         UserEntity deleted = iUserService.delete(id);
@@ -75,10 +81,10 @@ public class UserController {
     }
 
 
-        /**
-         * User entity to DTO
-         *
-         */
+    /**
+     * User entity to DTO
+     *
+     */
     private UserResponseDTO userEntity2DTO(UserEntity entity){
         return UserResponseDTO.builder()
                 .id(entity.getId().toString())
