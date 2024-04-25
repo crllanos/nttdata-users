@@ -5,3 +5,7 @@ security:
   jwt:
     secret-key: 03fa7e6f1493c71c0ea591f8fc057a08fcd04a4720f8e8cbd0a756c7272e00b9
     expiration-time: 3600000
+
+springdoc:
+  api-docs:
+    path: /api-docs
