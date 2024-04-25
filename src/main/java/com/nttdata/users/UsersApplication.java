@@ -31,31 +31,17 @@ public class UsersApplication {
 	@Bean
 	CommandLineRunner run(AdminService adminService, RoleService roleService, PasswordEncoder passwordEncoder){
 		return args -> {
-			log.info("generando admins dummy...");
-
-			// crea roles desde enum
-			roleService.saveRole(RoleEntity.builder().name(RoleEnum.SUPER_ADMIN).build());
-			roleService.saveRole(RoleEntity.builder().name(RoleEnum.ADMIN).build());
-			roleService.saveRole(RoleEntity.builder().name(RoleEnum.USER).build());
-
+			log.info("generando admin dummy...");
+			createRoles(roleService);
 			createSuperAdministrator(adminService, roleService, passwordEncoder);
-
-			// crea admins
-/*
-			authService.signup(AdminDTO.builder()
-					.name("Peter Parker")
-					.password("spiderman")
-					.email("spiderman@avengers.org")
-					.role(RoleEnum.USER.name()).build());
-
-			authService.signup(AdminDTO.builder()
-					.name("Tony Stark")
-					.password("ironman")
-					.email("ronman@avengers.org")
-					.role(RoleEnum.ADMIN.name()).build());
-*/
-			log.info("admins dummy creados");
+			log.info("admin dummy creado.");
 		};
+	}
+
+	private void createRoles(RoleService roleService) {
+		roleService.saveRole(RoleEntity.builder().name(RoleEnum.SUPER_ADMIN).build());
+		roleService.saveRole(RoleEntity.builder().name(RoleEnum.ADMIN).build());
+		roleService.saveRole(RoleEntity.builder().name(RoleEnum.USER).build());
 	}
 
 	private void createSuperAdministrator(AdminService adminService, RoleService roleService, PasswordEncoder passwordEncoder) {
