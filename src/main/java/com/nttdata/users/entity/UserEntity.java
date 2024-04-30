@@ -30,6 +30,6 @@ public class UserEntity {
     private Date lastLogin;
     private String token;
     private boolean active;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private List<PhoneEntity> phones;
 }
